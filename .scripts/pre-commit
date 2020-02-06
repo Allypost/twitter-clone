@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+function join_by() {
+  local d=$1
+  shift
+  echo -n "$1"
+  shift
+  printf "%s" "${@/#/$d}"
+}
+
+function display_heading() {
+  printf "\n\e[1m%s\e[0m\n" "$1"
+}
+
+function display_separator() {
+  printf "\n\e[1m---\e[0m\n"
+}
+
+function display_error() {
+  printf "\e[1;37;41m%s\e[0m\n" "$1"
+}
+
+function display_success() {
+  printf "\e[30;42m%s\e[0m\n" "$1"
+}
+
+FILES_FIXED=0
+
+PY_FILES="$(join_by ' ' $(git diff --cached --name-only --diff-filter=ACRM | grep -E '\.py$'))"
+JS_FILES="$(join_by ' ' $(git diff --cached --name-only --diff-filter=ACRM | grep -E '\.js$|\.vue$'))"
+JS_FILES="$(echo "$JS_FILES" | sed "s/frontend\///g")"
+
+if [[ -n "$PY_FILES" ]]; then
+
+  display_heading "Linting and fixing Python files…"
+  docker run --rm -v "$(pwd):/code" jbbarth/black ${PY_FILES}
+  FIXER_CLEAN_RESULT="$?"
+  FILES_FIXED=1
+
+  if [[ "$FIXER_CLEAN_RESULT" -ne 0 ]]; then
+    printf "\e[2A\r\e[J"
+    display_error "Can't commit. There are style inconsistencies."
+    display_error "The errors and fixes are listed above."
+    display_error "Please fix them before committing."
+    exit "$FIXER_CLEAN_RESULT"
+  else
+    git add ${PY_FILES}
+    display_success "No errors found, fixed files staged."
+  fi
+
+  display_separator
+
+fi
+
+if [[ -n "$JS_FILES" ]]; then
+
+  display_heading "Linting and fixing JavaScript files…"
+  docker/yarn lint ${JS_FILES}
+  FIXER_CLEAN_RESULT="$?"
+  FILES_FIXED=1
+
+  if [[ "$FIXER_CLEAN_RESULT" -ne 0 ]]; then
+    printf "\e[2A\r\e[J"
+    display_error "Can't commit. There are style inconsistencies."
+    display_error "The errors and fixes are listed above."
+    display_error "Please fix them before committing."
+    exit "$FIXER_CLEAN_RESULT"
+  else
+    git add ${JS_FILES}
+    display_success "No errors found, fixed files staged."
+  fi
+
+  display_separator
+
+fi
+
+if [[ "$FILES_FIXED" -ne 0 ]]; then
+  printf "\n"
+fi

@@ -1,5 +1,8 @@
 .PHONY: up down restart prod dev build lint watch containers-build build-dev build-frontend lint-frontend lint-backend build-dev-frontend refresh-backend
 
+init:
+	bash .scripts/init
+
 up:
 	docker/compose up -d
 
@@ -15,6 +18,10 @@ dev: up watch down
 build: build-frontend
 
 lint: lint-backend lint-frontend
+
+lint-check:
+	lint-check-backend
+	lint-check-frontend
 
 watch:
 	# The `exit 0` is here because
