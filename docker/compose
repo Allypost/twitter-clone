@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -e
+
+# Get directory of script
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
+
+# Load .env file in parent directory if it exists
+[ -f "$DIR/../.env" ] && source "$DIR/../.env"
+
+ARGS=()
+
+# Order of loading for docker-compose yaml files
+#
+# 1) docker-compose.yaml
+# 2) docker-compose.override.yaml
+
+docker-compose "${ARGS[@]}" "$@"

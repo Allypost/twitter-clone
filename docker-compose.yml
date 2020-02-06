@@ -1,0 +1,33 @@
+version: "3"
+
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: .docker/node/Dockerfile
+    volumes:
+      - ./frontend:/web
+
+  backend:
+    build:
+      context: .
+      dockerfile: .docker/python/Dockerfile
+    depends_on:
+      - twitter-db
+    ports:
+      - '127.0.0.1:80:80'
+    volumes:
+      - .:/app
+
+  twitter-db:
+    image: postgres:11-alpine
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: 'postgres'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_DB: 'twitter-clone'
+    volumes:
+      - database
+
+volumes:
+  database: {}
