@@ -6,6 +6,9 @@ init:
 up:
 	docker/compose up -d
 
+up-db:
+	docker/compose up -d twitter-db
+
 down:
 	docker/compose down
 
@@ -13,7 +16,7 @@ restart: down up
 
 prod: containers-build install build up
 
-dev: up watch down
+dev: migrate up watch down
 
 build: build-frontend
 
@@ -27,6 +30,18 @@ watch:
 
 shell: up
 	docker-compose exec backend flask shell
+
+migration: up-db
+	docker/python app/manage.py db migrate
+	# This is required because the generated migration file
+	# is owned by root (or the user running Docker)
+	docker/backend chown $(shell id -u):$(shell id -g) migrations/versions/*
+
+migrate: up-db
+	docker/python app/manage.py db upgrade
+
+migrate-down: up-db
+	docker/python app/manage.py db downgrade
 
 containers-build:
 	docker/compose build
