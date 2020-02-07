@@ -1,11 +1,21 @@
 import random
 
-from flask import render_template
+from functools import wraps
+from flask import render_template, jsonify
 
 from app import app
 
 
+def json_route(f):
+    @wraps(f)
+    def inner(**args):
+        return jsonify(f(**args))
+
+    return inner
+
+
 @app.route("/api/random")
+@json_route
 def api_random():
     return random.randint(0, 500)
 
