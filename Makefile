@@ -19,10 +19,6 @@ build: build-frontend
 
 lint: lint-backend lint-frontend
 
-lint-check:
-	lint-check-backend
-	lint-check-frontend
-
 watch:
 	# The `exit 0` is here because
 	# yarn watch returns a non-zero
