@@ -25,6 +25,9 @@ watch:
 	# code when it's sent a SIGINT
 	docker/yarn watch || exit 0
 
+shell: up
+	docker-compose exec backend flask shell
+
 containers-build:
 	docker/compose build
 
