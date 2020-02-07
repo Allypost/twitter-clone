@@ -14,6 +14,8 @@ services:
       dockerfile: .docker/python/Dockerfile
     depends_on:
       - twitter-db
+    env_file:
+      - .env
     ports:
       - '127.0.0.1:80:80'
     volumes:

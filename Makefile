@@ -44,7 +44,7 @@ lint-frontend:
 	docker/yarn lint
 
 lint-backend:
-	docker run --rm -v "$(shell pwd):/code" jbbarth/black main.py app
+	docker run --rm -v "$(shell pwd):/code" jbbarth/black main.py app migrations
 
 build-dev-frontend:
 	docker/yarn build --env=development
