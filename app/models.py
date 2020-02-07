@@ -15,3 +15,30 @@ class BaseModel(Model):
 
 
 BaseModel = db.make_declarative_base(BaseModel, db.metadata)
+
+
+class User(BaseModel):
+    __tablename__ = "users"
+
+    username = db.Column(db.String(255), unique=True, nullable=False)
+    password = db.Column(db.String(511), nullable=False)
+
+
+class Image(BaseModel):
+    __tablename__ = "images"
+
+    name = db.Column(db.String(255), nullable=False, unique=True)
+    fs_path = db.Column(db.String(511), nullable=False)
+    hash = db.Column(db.String(511), nullable=False)
+
+
+class Tweet(BaseModel):
+    __tablename__ = "tweets"
+
+    text = db.Column(db.Text, nullable=False)
+
+    poster_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    poster = db.relationship("User", backref=db.backref("users", lazy=True))
+
+    image_id = db.Column(db.Integer, db.ForeignKey("images.id"))
+    image = db.relationship("Image", backref=db.backref("tweets", lazy=True))
