@@ -1,7 +1,6 @@
 .PHONY: up down restart prod dev build lint watch containers-build build-dev build-frontend lint-frontend lint-backend build-dev-frontend refresh-backend
 
-init:
-	bash .scripts/init
+init: _run-init-script containers-build install build-dev up
 
 up:
 	docker/compose up -d
@@ -65,3 +64,6 @@ build-dev-frontend:
 
 refresh-backend:
 	touch frontend/dist/index.html
+
+_run-init-script:
+	bash .scripts/init
