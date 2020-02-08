@@ -4,6 +4,11 @@ from typing import Dict, Any, Optional
 from flask_sqlalchemy import Model
 from sqlalchemy import Table
 from sqlalchemy.ext.declarative import declared_attr
+
+from flask_login import UserMixin
+from werkzeug.security import check_password_hash, generate_password_hash
+
+from app import login
 from app.db import db
 
 
@@ -35,12 +40,23 @@ class BaseModel(Model):
 BaseModel = db.make_declarative_base(BaseModel, db.metadata)
 
 
-class User(BaseModel):
+class User(UserMixin, BaseModel):
     __tablename__ = "users"
     __hidden = {"password"}
 
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(511), nullable=False)
+
+    def set_password(self, password: str) -> "User":
+        self.password = generate_password_hash(password)
+        return self
+
+    def verify_password(self, password: str) -> bool:
+        return self.check_password(self.password, password)
+
+    @staticmethod
+    def check_password(pwhash: str, password: str) -> bool:
+        return check_password_hash(pwhash, password)
 
 
 class Image(BaseModel):
@@ -63,3 +79,8 @@ class Tweet(BaseModel):
 
     image_id = db.Column(db.Integer, db.ForeignKey("images.id"))
     image = db.relationship("Image", backref=db.backref("images", lazy=True))
+
+
+@login.user_loader
+def load_user(id: str) -> Optional[User]:
+    return User.query.get(int(id))

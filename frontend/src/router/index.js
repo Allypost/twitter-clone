@@ -12,6 +12,14 @@ const routes = [
     path: "/about",
     name: "About",
   },
+  {
+    path: "/register",
+    name: "Register",
+  },
+  {
+    path: "/login",
+    name: "Login",
+  },
 ];
 
 const router = new VueRouter({
