@@ -1,5 +1,5 @@
 <template>
-  <form @submit="handleSubmit" action="/api/auth/register" method="post">
+  <form @submit.prevent="handleSubmit" action="/api/auth/register" method="post">
     <h1>Register</h1>
     <section class="register-container">
       <FormInput
@@ -112,9 +112,7 @@
 
     methods: {
 
-      async handleSubmit(e) {
-        e.preventDefault();
-
+      async handleSubmit() {
         this.$set(this, "submitError", "");
 
         this.$set(this, "posting", true);
