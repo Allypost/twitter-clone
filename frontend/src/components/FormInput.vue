@@ -64,12 +64,7 @@
   @import "../assets/styles/variables";
 
   input {
-    font-size: inherit;
-    box-sizing: border-box;
     width: 250px;
-    padding: .21em .4em;
-    border: 1px solid transparentize(invert($background-color), .2);
-    border-radius: 4px;
   }
 
   abbr {
