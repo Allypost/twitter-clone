@@ -52,6 +52,10 @@ label {
   cursor: pointer;
 }
 
+input[type="submit"], input[type="checkbox"], button {
+  cursor: pointer;
+}
+
 input, textarea {
   font-size: inherit;
   box-sizing: border-box;
@@ -63,10 +67,6 @@ input, textarea {
 
   &:disabled {
     background-color: darken($background-color, 15%);
-  }
-
-  &[type="submit"], &[type="checkbox"] {
-    cursor: pointer;
   }
 
   &[type="submit"] {
