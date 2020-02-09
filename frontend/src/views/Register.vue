@@ -5,7 +5,7 @@
     @submit.prevent="handleSubmit"
   >
     <h1>Register</h1>
-    <section class="register-container">
+    <section :class="$style.registerContainer">
       <FormInput
         v-model="inputs.username"
         :disabled="posting"
@@ -29,11 +29,17 @@
         required
         type="password"
       />
-      <p v-if="inputError">
-        <span class="input-error">{{ inputError }}</span>
+      <p
+        v-if="inputError"
+        :class="$style.inputError"
+      >
+        <span>{{ inputError }}</span>
       </p>
-      <p v-if="submitError">
-        <span class="input-error">{{ submitError }}</span>
+      <p
+        v-if="submitError"
+        :class="$style.inputError"
+      >
+        <span>{{ submitError }}</span>
       </p>
       <FormInput
         :disabled="!canSubmit"
@@ -138,7 +144,7 @@
   };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss" module>
   .register-container {
     font-size: 120%;
     display: inline-block;

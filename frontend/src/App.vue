@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-    <nav id="nav">
+  <main>
+    <nav :id="$style.nav">
       <router-link :to="{ name: 'Home' }">
         Home
       </router-link>
@@ -29,7 +29,7 @@
     <main>
       <router-view />
     </main>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -57,7 +57,7 @@
 </script>
 
 <style lang="scss" src="./assets/styles/global.scss"></style>
-<style lang="scss" scoped>
+<style lang="scss" module>
   #nav {
     font-size: 150%;
     padding: 30px;

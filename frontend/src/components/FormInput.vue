@@ -4,14 +4,16 @@
       <span v-if="label">
         {{ label }}:
         <abbr
-          title="Required"
           v-if="required"
+          :class="$style.abbr"
+          title="Required"
         >*</abbr>
       </span>
     </label>
     <input
-      :disabled="disabled"
       :id="id"
+      :class="$style.input"
+      :disabled="disabled"
       :name="name"
       :required="required"
       :type="type"
@@ -60,14 +62,12 @@
   };
 </script>
 
-<style lang="scss" scoped>
-  @import "../assets/styles/variables";
-
-  input {
+<style lang="scss" module>
+  .input {
     width: 250px;
   }
 
-  abbr {
+  .abbr {
     font-weight: bold;
     margin-right: .35em;
   }

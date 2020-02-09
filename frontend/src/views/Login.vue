@@ -5,7 +5,7 @@
     @submit.prevent="handleSubmit"
   >
     <h1>Login</h1>
-    <section class="register-container">
+    <section :class="$style.loginContainer">
       <FormInput
         v-model="inputs.username"
         :disabled="posting"
@@ -28,11 +28,17 @@
         name="remember-me"
         type="checkbox"
       />
-      <p v-if="inputError">
-        <span class="input-error">{{ inputError }}</span>
+      <p
+        v-if="inputError"
+        :class="$style.inputError"
+      >
+        <span>{{ inputError }}</span>
       </p>
-      <p v-if="submitError">
-        <span class="input-error">{{ submitError }}</span>
+      <p
+        v-if="submitError"
+        :class="$style.inputError"
+      >
+        <span>{{ submitError }}</span>
       </p>
       <FormInput
         :disabled="!canSubmit"
@@ -128,3 +134,17 @@
 
   };
 </script>
+
+<style lang="scss" module>
+  .login-container {
+    font-size: 120%;
+    display: inline-block;
+    margin: 0 auto;
+    text-align: right;
+  }
+
+  .input-error {
+    font-size: 80%;
+    color: #b71c1c;
+  }
+</style>
