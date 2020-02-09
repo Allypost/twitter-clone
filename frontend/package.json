@@ -6,7 +6,7 @@
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "watch": "NODE_ENV=production vue-cli-service build --watch --mode development"
+    "watch": "vue-cli-service build --watch --mode development"
   },
   "dependencies": {
     "axios": "^0.19.2",
