@@ -1,6 +1,8 @@
 import { get, post } from "@/helpers/axios";
 import Vue from "vue";
 
+const AUTH_BASE = "/api/auth";
+
 const getUser = async () => {
   const localUser = JSON.parse(sessionStorage.getItem("user"));
 
@@ -8,7 +10,7 @@ const getUser = async () => {
     return localUser;
   }
 
-  const { data = null } = await get("/api/auth/me");
+  const { data = null } = await get(`${ AUTH_BASE }/me`);
 
   return data;
 };
@@ -41,7 +43,7 @@ const mutations = {
 const actions = {
 
   async logout({ commit }) {
-    await post("/api/auth/logout");
+    await post(`${ AUTH_BASE }/logout`);
 
     commit("setUser", null);
   },
@@ -53,7 +55,7 @@ const actions = {
   },
 
   async login({ commit }, { username, password }) {
-    const { success, errors, data } = await post("/api/auth/login", { username, password });
+    const { success, errors, data } = await post(`${ AUTH_BASE }/login`, { username, password });
 
     if (success) {
       commit("setUser", data);
@@ -64,7 +66,7 @@ const actions = {
   },
 
   async register({ commit }, { username, password, passwordRepeat }) {
-    const { success, errors, data } = await post("/api/auth/register", { username, password, passwordRepeat });
+    const { success, errors, data } = await post(`${ AUTH_BASE }/register`, { username, password, passwordRepeat });
 
     if (success) {
       commit("setUser", data);
