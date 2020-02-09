@@ -44,6 +44,7 @@
 
 <script>
   import FormInput from "@/components/FormInput";
+  import { mapActions } from "vuex";
 
   export default {
     name: "Register",
@@ -117,16 +118,19 @@
         this.$set(this, "submitError", "");
 
         this.$set(this, "posting", true);
-        const { success, errors, data } = await this.$post("/api/auth/register", this.inputs);
+        const error = await this.register(this.inputs);
         this.$set(this, "posting", false);
 
-        this.$set(this, "submitError", errors.join(" "));
-
-        if (success) {
-          this.$store.commit("user/setUser", data);
+        if (error) {
+          this.$set(this, "submitError", error);
+        } else {
           await this.$router.push({ name: "Home" });
         }
       },
+
+      ...mapActions({
+        "register": "user/register",
+      }),
 
     },
   };

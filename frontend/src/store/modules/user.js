@@ -52,6 +52,28 @@ const actions = {
     commit("setUser", data);
   },
 
+  async login({ commit }, { username, password }) {
+    const { success, errors, data } = await post("/api/auth/login", { username, password });
+
+    if (success) {
+      commit("setUser", data);
+      return null;
+    } else {
+      return errors.join(" ");
+    }
+  },
+
+  async register({ commit }, { username, password, passwordRepeat }) {
+    const { success, errors, data } = await post("/api/auth/register", { username, password, passwordRepeat });
+
+    if (success) {
+      commit("setUser", data);
+      return null;
+    } else {
+      return errors.join(" ");
+    }
+  },
+
 };
 
 export default {
