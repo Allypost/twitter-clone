@@ -83,10 +83,10 @@ class Tweet(BaseModel):
     text = db.Column(db.Text, nullable=False)
 
     poster_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    poster = db.relationship("User", backref=db.backref("users", lazy=True))
+    poster = db.relationship("User")
 
     image_id = db.Column(db.Integer, db.ForeignKey("images.id"))
-    image = db.relationship("Image", backref=db.backref("images", lazy=True))
+    image = db.relationship("Image")
 
 
 @login.user_loader
