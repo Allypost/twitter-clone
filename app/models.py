@@ -19,7 +19,7 @@ class BaseModel(Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, onupdate=datetime.utcnow)
 
-    __hidden = set()
+    __hidden__ = set()
 
     def __repr__(self) -> str:
         return "<%s %r>" % (type(self).__name__, self.id)
@@ -30,11 +30,19 @@ class BaseModel(Model):
 
     def to_dict(self) -> Dict[str, Any]:
         """Serializes only column data."""
-        return {
-            c.name: getattr(self, c.name)
-            for c in self.__table__.columns
-            if c.name not in self.__hidden
-        }
+        props = {}
+        for prop_name in self.__mapper__.attrs.keys():
+            if prop_name in self.__hidden__:
+                continue
+
+            prop_value = getattr(self, prop_name)
+
+            if isinstance(prop_value, BaseModel):
+                prop_value = prop_value.to_dict()
+
+            props[prop_name] = prop_value
+
+        return props
 
 
 BaseModel = db.make_declarative_base(BaseModel, db.metadata)
@@ -42,7 +50,7 @@ BaseModel = db.make_declarative_base(BaseModel, db.metadata)
 
 class User(UserMixin, BaseModel):
     __tablename__ = "users"
-    __hidden = {"password"}
+    __hidden__ = {"password"}
 
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(511), nullable=False)
@@ -61,7 +69,7 @@ class User(UserMixin, BaseModel):
 
 class Image(BaseModel):
     __tablename__ = "images"
-    __hidden = {"fs_path"}
+    __hidden__ = {"fs_path"}
 
     name = db.Column(db.String(255), nullable=False, unique=True)
     fs_path = db.Column(db.String(511), nullable=False)
@@ -70,7 +78,7 @@ class Image(BaseModel):
 
 class Tweet(BaseModel):
     __tablename__ = "tweets"
-    __hidden = {"poster_id", "image_id"}
+    __hidden__ = {"poster_id", "image_id"}
 
     text = db.Column(db.Text, nullable=False)
 
