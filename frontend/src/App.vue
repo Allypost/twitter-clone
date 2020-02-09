@@ -1,18 +1,29 @@
 <template>
   <div id="app">
     <nav id="nav">
-      <router-link :to="{ name: 'Home' }">Home</router-link>
+      <router-link :to="{ name: 'Home' }">
+        Home
+      </router-link>
       |
-      <router-link :to="{ name: 'About' }">About</router-link>
+      <router-link :to="{ name: 'About' }">
+        About
+      </router-link>
       <template v-if="loggedIn">
         |
-        <a @click.prevent="logout" href="/logout">Logout</a>
+        <a
+          href="/logout"
+          @click.prevent="logout"
+        >Logout</a>
       </template>
       <template v-else>
         |
-        <router-link :to="{ name: 'Login' }">Login</router-link>
+        <router-link :to="{ name: 'Login' }">
+          Login
+        </router-link>
         |
-        <router-link :to="{ name: 'Register' }">Register</router-link>
+        <router-link :to="{ name: 'Register' }">
+          Register
+        </router-link>
       </template>
     </nav>
     <main>
@@ -25,15 +36,15 @@
   import { mapActions, mapGetters } from "vuex";
 
   export default {
-    created() {
-      window.$store = this.$store;
-      this.fetchUser();
-    },
-
     computed: {
       ...mapGetters({
         "loggedIn": "user/loggedIn",
       }),
+    },
+
+    created() {
+      window.$store = this.$store;
+      this.fetchUser();
     },
 
     methods: {
@@ -48,6 +59,7 @@
 <style lang="scss" src="./assets/styles/global.scss"></style>
 <style lang="scss" scoped>
   #nav {
+    font-size: 150%;
     padding: 30px;
   }
 </style>

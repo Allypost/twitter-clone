@@ -1,28 +1,32 @@
 <template>
-  <form @submit.prevent="handleSubmit" action="/api/auth/login" method="post">
+  <form
+    action="/api/auth/login"
+    method="post"
+    @submit.prevent="handleSubmit"
+  >
     <h1>Login</h1>
     <section class="register-container">
       <FormInput
+        v-model="inputs.username"
         :disabled="posting"
         label="Username"
         name="username"
         required
-        v-model="inputs.username"
       />
       <FormInput
+        v-model="inputs.password"
         :disabled="posting"
         label="Password"
         name="password"
         required
         type="password"
-        v-model="inputs.password"
       />
       <FormInput
+        v-model="inputs.rememberMe"
         :disabled="posting"
         label="Remember me"
         name="remember-me"
         type="checkbox"
-        v-model="inputs.rememberMe"
       />
       <p v-if="inputError">
         <span class="input-error">{{ inputError }}</span>
