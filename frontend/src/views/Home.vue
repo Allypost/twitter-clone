@@ -8,12 +8,16 @@
         style="font-size: 120%"
       />
     </section>
+    <section :class="$style.section">
+      <TweetTimeline />
+    </section>
   </div>
 </template>
 
 <script>
   // @ is an alias to /src
   import CreateTweet from "@/components/timeline/CreateTweet";
+  import TweetTimeline from "@/components/timeline/TweetTimeline";
   import { mapGetters } from "vuex";
 
   export default {
@@ -21,6 +25,7 @@
 
     components: {
       CreateTweet,
+      TweetTimeline,
     },
 
     computed: {
