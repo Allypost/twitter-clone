@@ -19,6 +19,11 @@
         </label>
       </p>
       <div :class="$style.submitContainer">
+        <span
+          v-if="submitError"
+          :class="$style.submitError"
+          v-text="submitError"
+        />
         <span :class="$style.spacer" />
         <scale-loader
           v-if="posting"
@@ -43,7 +48,7 @@
           </radial-progress-bar>
         </span>
         <input
-          :disabled="textTooLong || posting"
+          :disabled="textTooShort || textTooLong || posting"
           :class="$style.tweetButton"
           type="submit"
           value="Tweet"
@@ -75,6 +80,12 @@
     }),
 
     computed: {
+
+      textTooShort() {
+        const { inputs: { text } } = this;
+
+        return 1 >= text.length;
+      },
 
       textTooLong() {
         const { inputs: { text }, maxLength } = this;
@@ -167,6 +178,12 @@
         margin-right: initial;
       }
     }
+  }
+
+  .submit-error {
+    color: #e53935;
+    font-size: initial;
+    padding-left: 2px;
   }
 
   .spacer {
