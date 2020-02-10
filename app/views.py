@@ -206,7 +206,7 @@ def paginated_query(*, page: int, query: Query) -> dict:
             "total": paginated_items.pages,
             "next": paginated_items.has_next and paginated_items.next_num,
             "prev": paginated_items.has_prev and paginated_items.prev_num,
-            "tweets": [item.to_dict() for item in items_list],
+            "items": [item.to_dict() for item in items_list],
         }
     )
 

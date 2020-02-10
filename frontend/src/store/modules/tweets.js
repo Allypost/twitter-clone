@@ -94,7 +94,7 @@ const actions = {
     const { success, data, errors } = await fetchTimeline({ type, page });
 
     if (success) {
-      const { tweets, ...metadata } = data;
+      const { items: tweets, ...metadata } = data;
 
       commit("setTweets", tweets);
       commit("setMetadata", { ...metadata, type });
