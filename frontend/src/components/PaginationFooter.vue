@@ -139,7 +139,7 @@
 
   .container {
     display: flex;
-    align-items: end;
+    align-items: flex-start;
     justify-content: center;
   }
 
@@ -154,6 +154,11 @@
 
     &:hover {
       color: $link-color-active;
+    }
+
+    &:disabled {
+      cursor: default;
+      color: grayscale($link-color);
     }
   }
 
