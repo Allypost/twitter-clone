@@ -5,12 +5,14 @@ from collections import defaultdict
 from functools import wraps
 from json import JSONDecodeError
 
+from sqlalchemy.orm import Query
+
 from app.db import db
 from flask import render_template, jsonify, request, redirect
 from flask_login import logout_user, current_user, login_user
 
 from app import app
-from app.models import User
+from app.models import User, Tweet
 
 
 def json_route(f):
@@ -43,11 +45,11 @@ def api_anonymous(f):
     return inner
 
 
-def error_response(reasons: list) -> object:
+def error_response(reasons: list) -> dict:
     return {"success": False, "data": [], "errors": reasons}
 
 
-def success_response(data) -> object:
+def success_response(data) -> dict:
     return {"success": True, "data": data, "errors": []}
 
 
@@ -139,6 +141,86 @@ def api_me():
     user = User.query.get(int(current_user.get_id()))
 
     return success_response(user.to_dict())
+
+
+@app.route("/api/tweet", methods=["POST"])
+@json_route
+@api_logged_in
+def api_tweet():
+    try:
+        data = json.loads(
+            request.data, object_hook=lambda x: defaultdict(lambda: None, x)
+        )
+    except JSONDecodeError:
+        return error_response(["Invalid request."])
+
+    tweet_len = len(data["text"] or "")
+
+    if tweet_len < 1:
+        return error_response(["Your tweet must be at least one character."])
+
+    if tweet_len > 120:
+        return error_response(["Your tweet must be at most 120 characters."])
+
+    tweet = Tweet(
+        text=data["text"].replace("\r\n", "\n"), poster_id=int(current_user.get_id())
+    )
+
+    db.session.add(tweet)
+    db.session.commit()
+
+    return success_response(tweet.to_dict())
+
+
+def paginated_query(*, page: int, query: Query) -> dict:
+    page = max(1, page)
+    per_page = 20
+
+    entity = query.column_descriptions[0]["entity"]
+
+    paginated_items = query.order_by(entity.created_at.desc()).paginate(
+        page=page, per_page=per_page, error_out=False
+    )
+
+    items_list = paginated_items.items or []
+
+    return success_response(
+        {
+            "page": paginated_items.page,
+            "perPage": per_page,
+            "total": paginated_items.pages,
+            "next": paginated_items.has_next and paginated_items.next_num,
+            "prev": paginated_items.has_prev and paginated_items.prev_num,
+            "tweets": [item.to_dict() for item in items_list],
+        }
+    )
+
+
+@app.route("/api/tweet/timeline/public", defaults={"page": 1}, methods=["GET"])
+@app.route("/api/tweet/timeline/public/<int:page>", methods=["GET"])
+@json_route
+def api_tweet_public_list(page: int):
+    return paginated_query(page=page, query=Tweet.query)
+
+
+@app.route("/api/tweet/timeline/my", defaults={"page": 1}, methods=["GET"])
+@app.route("/api/tweet/timeline/my/<int:page>", methods=["GET"])
+@json_route
+@api_logged_in
+def api_tweet_my_list(page: int):
+    query = Tweet.query.filter_by(poster_id=int(current_user.get_id()))
+
+    return paginated_query(page=page, query=query)
+
+
+@app.route("/api/tweet/timeline/private", defaults={"page": 1}, methods=["GET"])
+@app.route("/api/tweet/timeline/private/<int:page>", methods=["GET"])
+@json_route
+@api_logged_in
+def api_tweet_private_list(page: int):
+    query = Tweet.query.filter_by(poster_id=int(current_user.get_id()))
+
+    return paginated_query(page=page, query=query)
 
 
 @app.route("/logout")

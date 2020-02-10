@@ -1,9 +1,12 @@
 import { get, post, request } from "@/helpers/axios";
 import axios from "axios";
 import Vue from "vue";
+import VueTextareaAutosize from "vue-textarea-autosize";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
+
+Vue.use(VueTextareaAutosize);
 
 Vue.config.productionTip = false;
 
