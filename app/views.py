@@ -172,6 +172,21 @@ def api_tweet():
     return success_response(tweet.to_dict())
 
 
+@app.route("/api/tweet/<int:tweet_id>", methods=["DELETE"])
+@json_route
+@api_logged_in
+def api_delete_tweet(tweet_id: int):
+    tweet = Tweet.query.get(tweet_id)
+
+    if not tweet or tweet.poster_id != int(current_user.get_id()):
+        return error_response(["You don't have permission to do that."])
+
+    db.session.delete(tweet)
+    db.session.commit()
+
+    return success_response(None)
+
+
 def paginated_query(*, page: int, query: Query) -> dict:
     page = max(1, page)
     per_page = 20

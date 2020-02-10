@@ -40,3 +40,19 @@ export async function post(url, data = undefined, config = {}) {
     ...config,
   });
 }
+
+/**
+ * @param {String} url
+ * @param {AxiosRequestConfig} config
+ * @returns {Promise<T>}
+ */
+export async function del(url, config = {}) {
+  return request({
+    url,
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    config,
+  });
+}

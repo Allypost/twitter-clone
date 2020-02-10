@@ -9,6 +9,19 @@
           :class="$style.tweetDate"
           :title="date.toLocaleString()"
         >{{ formattedDate }}</abbr>
+        <template
+          v-if="currentUserId === poster.id"
+        >
+          <span
+            :class="$style.editTools"
+          >
+            <button
+              :class="$style.deleteButton"
+              :disabled="loading"
+              @click.prevent="handleDelete"
+            >&#x1f5d1;</button>
+          </span>
+        </template>
       </div>
       <blockquote
         :class="$style.tweetBodyText"
@@ -20,7 +33,7 @@
 
 <script>
   import { format } from "timeago.js";
-  import { mapGetters } from "vuex";
+  import { mapActions, mapGetters } from "vuex";
 
   const requestIdleCallbackPolyfill = function(handler) {
     const startTime = Date.now();
@@ -56,6 +69,7 @@
       return {
         formattedDate: "",
         dateListener: null,
+        loading: false,
       };
     },
 
@@ -71,6 +85,7 @@
 
       ...mapGetters({
         "loggedIn": "user/loggedIn",
+        "currentUserId": "user/getId",
       }),
 
     },
@@ -86,6 +101,22 @@
 
     methods: {
 
+      async handleDelete() {
+        const accepted = confirm("Are you sure you want to delete your tweet?");
+
+        if (!accepted) {
+          return;
+        }
+
+        this.$set(this, "loading", true);
+        const error = await this.deleteTweet({ id: this.tweet.id });
+        this.$set(this, "loading", false);
+
+        if (error) {
+          alert(error);
+        }
+      },
+
       updateTimeAgo() {
         const handler = () =>
           this.$set(this, "formattedDate", format(this.date))
@@ -93,6 +124,10 @@
 
         requestIdleCallback(handler);
       },
+
+      ...mapActions({
+        "deleteTweet": "tweets/deleteTweet",
+      }),
 
     },
   };
@@ -152,5 +187,22 @@
     padding-left: .4em;
     white-space: pre-wrap;
     border-left: 1px solid #{$text-color};
+  }
+
+  .edit-tools {
+    margin-left: auto;
+  }
+
+  .delete-button {
+    $color: #e53935;
+
+    padding: .2em .3em;
+    border: 2px solid #{$color};
+    border-radius: 4px;
+    background-color: transparentize($color, .95);
+
+    &:hover {
+      background-color: transparentize($color, .9);
+    }
   }
 </style>

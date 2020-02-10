@@ -29,6 +29,10 @@ const getters = {
     return null !== user;
   },
 
+  getId({ user }) {
+    return Number(user && user.id);
+  },
+
 };
 
 const mutations = {

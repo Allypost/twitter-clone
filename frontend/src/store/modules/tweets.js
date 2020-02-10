@@ -1,4 +1,4 @@
-import { get, post } from "@/helpers/axios";
+import { del, get, post } from "@/helpers/axios";
 import Vue from "vue";
 
 const TWEET_BASE = "/api/tweet";
@@ -56,6 +56,12 @@ const mutations = {
     Vue.set(state, "tweets", [ ...state.tweets, tweet ].sort(sortByCreatedAt));
   },
 
+  removeTweet(state, tweetId) {
+    const { tweets } = state;
+
+    Vue.set(state, "tweets", tweets.filter(({ id }) => id !== tweetId));
+  },
+
   setMetadata(state, { type, page, perPage, total, next, prev }) {
     Vue.set(state, "metadata", { type, page, perPage, total, next, prev });
   },
@@ -67,6 +73,17 @@ const actions = {
 
     if (success) {
       commit("addTweet", data);
+      return null;
+    } else {
+      return errors.join(" ");
+    }
+  },
+
+  async deleteTweet({ commit }, { id }) {
+    const { success, errors } = await del(`${ TWEET_BASE }/${ id }`);
+
+    if (success) {
+      commit("removeTweet", id);
       return null;
     } else {
       return errors.join(" ");
