@@ -2,3 +2,11 @@ $background-color: #ffffff;
 $text-color: #455a64;
 $link-color: #006064;
 $link-color-active: #009688;
+
+//noinspection CssInvalidPseudoSelector,CssUnknownProperty
+:export {
+  background-color: $background-color;
+  text-color: $text-color;
+  link-color: $link-color;
+  link-color-active: $link-color-active;
+}
