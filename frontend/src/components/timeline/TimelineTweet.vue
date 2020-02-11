@@ -23,7 +23,7 @@
             </button>
             <button
               v-else
-              :class="$style.followButton"
+              :class="$style.unfollowButton"
               :disabled="loading"
               @click.prevent="handleUnfollow(poster.id)"
             >
