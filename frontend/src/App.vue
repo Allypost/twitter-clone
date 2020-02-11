@@ -5,8 +5,8 @@
         Home
       </router-link>
       |
-      <router-link :to="{ name: 'About' }">
-        About
+      <router-link :to="{ name: 'Users' }">
+        Users
       </router-link>
       <template v-if="loggedIn">
         |

@@ -241,6 +241,30 @@ def api_me():
     return success_response(user.to_dict())
 
 
+@app.route("/api/user/search", methods=["POST"])
+@json_route
+def api_user_search():
+    try:
+        data = json.loads(
+            request.data, object_hook=lambda x: defaultdict(lambda: None, x)
+        )
+    except JSONDecodeError:
+        return error_response(["Invalid request."])
+
+    page = data["page"] or 1
+    try:
+        page = int(page)
+    except ValueError:
+        page = 1
+
+    query = data["query"] or ""
+    query = "%{}%".format(query)
+
+    users = User.query.filter(User.username.ilike(query))
+
+    return paginated_query(query=users, page=page)
+
+
 @app.route("/api/user/follow", methods=["POST"])
 @json_route
 @api_logged_in

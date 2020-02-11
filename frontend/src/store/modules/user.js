@@ -104,6 +104,10 @@ const actions = {
     commit("setUser", null);
   },
 
+  async search(_, { query = "", page = 1 } = {}) {
+    return await post(`${ USER_BASE }/search`, { query, page });
+  },
+
   async fetchAll({ dispatch }, { force = false } = {}) {
     await dispatch("fetchUser", force);
     await dispatch("fetchFollowers", force);

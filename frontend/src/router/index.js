@@ -20,6 +20,10 @@ const routes = [
     path: "/login",
     name: "Login",
   },
+  {
+    path: "/users",
+    name: "Users",
+  },
 ];
 
 const router = new VueRouter({
