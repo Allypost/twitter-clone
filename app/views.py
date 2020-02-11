@@ -303,9 +303,10 @@ def api_user_unfollow():
     if user_to_unfollow.followers.filter_by(id=current_id).count() < 1:
         return error_response(["You aren't following that user"])
 
-    query = follows.delete().where(
-        follows.c.follower_id == current_id
-        and follows.c.following_id == int(data["id"])
+    query = (
+        follows.delete()
+        .where(follows.c.follower_id == current_id)
+        .where(follows.c.following_id == int(data["id"]))
     )
     db.session.execute(query)
     db.session.commit()
