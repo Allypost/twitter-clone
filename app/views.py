@@ -5,7 +5,9 @@ from collections import defaultdict
 from functools import wraps
 from json import JSONDecodeError
 
+from flask_sqlalchemy import BaseQuery
 from sqlalchemy.orm import Query
+from sqlalchemy.sql import Insert
 
 from app.db import db
 from flask import render_template, jsonify, request, redirect
@@ -132,23 +134,6 @@ def api_logout():
     return success_response([])
 
 
-@app.route("/api/auth/me", methods=["GET"])
-@json_route
-def api_me():
-    if not current_user.is_authenticated:
-        return success_response(None)
-
-    user = User.query.get(int(current_user.get_id()))
-
-    data = user.to_dict()
-    data.update(
-        followers=[f.to_dict() for f in user.followers],
-        following=[f.to_dict() for f in user.following],
-    )
-
-    return success_response(data)
-
-
 @app.route("/api/tweet", methods=["POST"])
 @json_route
 @api_logged_in
@@ -245,6 +230,17 @@ def api_tweet_private_list(page: int):
     query = Tweet.query.filter(Tweet.poster_id.in_(following_query))
 
     return paginated_query(page=page, query=query)
+
+
+@app.route("/api/user/me", methods=["GET"])
+@json_route
+def api_me():
+    if not current_user.is_authenticated:
+        return success_response(None)
+
+    user = User.query.get(int(current_user.get_id()))
+
+    return success_response(user.to_dict())
 
 
 @app.route("/logout")

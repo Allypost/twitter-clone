@@ -2,6 +2,7 @@ import { get, post } from "@/helpers/axios";
 import Vue from "vue";
 
 const AUTH_BASE = "/api/auth";
+const USER_BASE = "/api/user";
 
 const getUser = async () => {
   const localUser = JSON.parse(sessionStorage.getItem("user"));
@@ -10,7 +11,7 @@ const getUser = async () => {
     return localUser;
   }
 
-  const { data = null } = await get(`${ AUTH_BASE }/me`);
+  const { data = null } = await get(`${ USER_BASE }/me`);
 
   return data;
 };
