@@ -10,6 +10,8 @@
       </router-link>
       <template v-if="loggedIn">
         |
+        <a href="#">{{ currentUserUsername }}</a>
+        |
         <a
           href="/logout"
           @click.prevent="logout"
@@ -39,6 +41,7 @@
     computed: {
       ...mapGetters({
         "loggedIn": "user/loggedIn",
+        "currentUserUsername": "user/getUsername",
       }),
     },
 
@@ -49,7 +52,7 @@
 
     methods: {
       ...mapActions({
-        "fetchUser": "user/fetchUser",
+        "fetchUser": "user/fetchAll",
         "logout": "user/logout",
       }),
     },

@@ -9,19 +9,37 @@
           :class="$style.tweetDate"
           :title="date.toLocaleString()"
         >{{ formattedDate }}</abbr>
-        <template
-          v-if="currentUserId === poster.id"
-        >
-          <span
-            :class="$style.editTools"
+        <span :class="$style.editTools">
+          <template
+            v-if="loggedIn && poster.id !== currentUserId"
+          >
+            <button
+              v-if="!isFollowingUser"
+              :class="$style.followButton"
+              :disabled="loading"
+              @click.prevent="handleFollow(poster.id)"
+            >
+              Follow
+            </button>
+            <button
+              v-else
+              :class="$style.followButton"
+              :disabled="loading"
+              @click.prevent="handleUnfollow(poster.id)"
+            >
+              Unfollow
+            </button>
+          </template>
+          <template
+            v-if="currentUserId === poster.id"
           >
             <button
               :class="$style.deleteButton"
               :disabled="loading"
               @click.prevent="handleDelete"
             >&#x1f5d1;</button>
-          </span>
-        </template>
+          </template>
+        </span>
       </div>
       <blockquote
         :class="$style.tweetBodyText"
@@ -55,6 +73,16 @@
 
   const requestIdleCallback = window.requestIdleCallback || requestIdleCallbackPolyfill;
 
+  const doAsync = (fn) => (async function(...args) {
+    this.$set(this, "loading", true);
+    const error = await fn.call(this, ...args);
+    this.$set(this, "loading", false);
+
+    if (error) {
+      alert(error);
+    }
+  });
+
   export default {
     name: "TimelineTweet",
 
@@ -83,9 +111,14 @@
         return new Date(this.tweet.created_at);
       },
 
+      isFollowingUser() {
+        return this.isFollowing(this.poster.id);
+      },
+
       ...mapGetters({
         "loggedIn": "user/loggedIn",
         "currentUserId": "user/getId",
+        "isFollowing": "user/isFollowing",
       }),
 
     },
@@ -108,6 +141,11 @@
           return;
         }
 
+        await doAsync(
+          async () =>
+            await this.deleteTweet({ id: this.tweet.id }),
+        );
+
         this.$set(this, "loading", true);
         const error = await this.deleteTweet({ id: this.tweet.id });
         this.$set(this, "loading", false);
@@ -116,6 +154,18 @@
           alert(error);
         }
       },
+
+      handleFollow: doAsync(
+        async function(userId) {
+          return await this.followUser({ id: userId });
+        },
+      ),
+
+      handleUnfollow: doAsync(
+        async function(userId) {
+          return this.unfollowUser({ id: userId });
+        },
+      ),
 
       updateTimeAgo() {
         const handler = () =>
@@ -127,6 +177,8 @@
 
       ...mapActions({
         "deleteTweet": "tweets/deleteTweet",
+        "followUser": "user/follow",
+        "unfollowUser": "user/unfollow",
       }),
 
     },
@@ -193,12 +245,45 @@
     margin-left: auto;
   }
 
+  %tools-button-base {
+    font-size: 75%;
+    margin-right: 10px;
+    padding: .2em .3em;
+    color: $text-color;
+    border: 2px solid #{$text-color};
+    border-radius: 4px;
+    background-color: transparentize($link-color-active, .95);
+
+    &:last-child {
+      margin-right: inherit;
+    }
+
+    &:hover {
+      background-color: transparentize($link-color-active, .9);
+    }
+  }
+
+  .follow-button {
+    @extend %tools-button-base;
+  }
+
+  .unfollow-button {
+    @extend %tools-button-base;
+
+    border-color: complement($link-color-active);
+    background-color: transparentize(complement($link-color-active), .95);
+
+    &:hover {
+      background-color: transparentize(complement($link-color-active), .9);
+    }
+  }
+
   .delete-button {
+    @extend %tools-button-base;
+
     $color: #e53935;
 
-    padding: .2em .3em;
-    border: 2px solid #{$color};
-    border-radius: 4px;
+    border-color: $color;
     background-color: transparentize($color, .95);
 
     &:hover {
