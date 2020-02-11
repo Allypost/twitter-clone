@@ -230,7 +230,6 @@
   .tweet-date {
     font-size: 75%;
     font-weight: lighter;
-    cursor: help;
   }
 
   .tweet-body-text {
