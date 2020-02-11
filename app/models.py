@@ -96,6 +96,7 @@ class Image(BaseModel):
     name = db.Column(db.String(255), nullable=False, unique=True)
     fs_path = db.Column(db.String(511), nullable=False)
     hash = db.Column(db.String(511), nullable=False)
+    mime_type = db.Column(db.String(255))
 
 
 class Tweet(BaseModel):
