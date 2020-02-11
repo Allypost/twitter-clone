@@ -2,8 +2,15 @@
 import axios, { AxiosRequestConfig } from "axios";
 
 /**
+ * @typedef {Object} ApiResponse
+ * @property {Boolean} success
+ * @property data
+ * @property {Array} errors
+ */
+
+/**
  * @param {AxiosRequestConfig} config
- * @returns {Promise<T>}
+ * @returns {Promise<ApiResponse>}
  */
 export async function request(config) {
   return (
@@ -17,7 +24,7 @@ export async function request(config) {
 /**
  * @param {String} url
  * @param {AxiosRequestConfig} config
- * @returns {Promise<T>}
+ * @returns {Promise<ApiResponse>}
  */
 export async function get(url, config = {}) {
   return request({ url, method: "GET", ...config });
@@ -27,7 +34,7 @@ export async function get(url, config = {}) {
  * @param {String} url
  * @param data
  * @param {AxiosRequestConfig} config
- * @returns {Promise<T>}
+ * @returns {Promise<ApiResponse>}
  */
 export async function post(url, data = undefined, config = {}) {
   return request({
@@ -44,7 +51,7 @@ export async function post(url, data = undefined, config = {}) {
 /**
  * @param {String} url
  * @param {AxiosRequestConfig} config
- * @returns {Promise<T>}
+ * @returns {Promise<ApiResponse>}
  */
 export async function del(url, config = {}) {
   return request({
