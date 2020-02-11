@@ -56,6 +56,8 @@ follows = db.Table(
     db.Column("follower_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
     db.Column("following_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
     db.Column("created_at", db.DateTime, default=datetime.utcnow, nullable=False),
+    db.UniqueConstraint("follower_id", "following_id", name="uq_unique_follow"),
+    db.CheckConstraint("follower_id <> following_id", name="ck_no_follow_yourself"),
 )
 
 
