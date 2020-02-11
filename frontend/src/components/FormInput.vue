@@ -45,7 +45,7 @@
         default: false,
       },
       value: {
-        type: [ Number, String ],
+        type: [ Number, String, Boolean ],
         default: null,
       },
       disabled: {
