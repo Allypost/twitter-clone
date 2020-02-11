@@ -25,7 +25,10 @@
         <span v-text="t.name" />
       </label>
     </section>
-    <section>
+
+    <section
+      v-if="tweets.length > 0"
+    >
       <PaginationFooter
         v-model="page"
         :disabled="loading"
@@ -41,6 +44,12 @@
         :disabled="loading"
         :pagination-metadata="paginationMetadata"
       />
+    </section>
+    <section
+      v-else
+    >
+      <h2>Nothing Here...</h2>
+      <h3>Yet.</h3>
     </section>
   </fieldset>
 </template>
