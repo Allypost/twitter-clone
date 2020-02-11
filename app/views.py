@@ -12,7 +12,7 @@ from flask import render_template, jsonify, request, redirect
 from flask_login import logout_user, current_user, login_user
 
 from app import app
-from app.models import User, Tweet
+from app.models import User, Tweet, follows
 
 
 def json_route(f):
@@ -140,7 +140,13 @@ def api_me():
 
     user = User.query.get(int(current_user.get_id()))
 
-    return success_response(user.to_dict())
+    data = user.to_dict()
+    data.update(
+        followers=[f.to_dict() for f in user.followers],
+        following=[f.to_dict() for f in user.following],
+    )
+
+    return success_response(data)
 
 
 @app.route("/api/tweet", methods=["POST"])
@@ -193,7 +199,7 @@ def paginated_query(*, page: int, query: Query) -> dict:
 
     entity = query.column_descriptions[0]["entity"]
 
-    paginated_items = query.order_by(entity.created_at.desc()).paginate(
+    paginated_items = query.order_by(entity.id.desc()).paginate(
         page=page, per_page=per_page, error_out=False
     )
 
@@ -233,7 +239,10 @@ def api_tweet_my_list(page: int):
 @json_route
 @api_logged_in
 def api_tweet_private_list(page: int):
-    query = Tweet.query.filter_by(poster_id=int(current_user.get_id()))
+    following_query = db.session.query(follows.c.following_id).filter(
+        follows.c.follower_id == int(current_user.get_id())
+    )
+    query = Tweet.query.filter(Tweet.poster_id.in_(following_query))
 
     return paginated_query(page=page, query=query)
 

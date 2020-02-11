@@ -6,6 +6,7 @@ from sqlalchemy import Table
 from sqlalchemy.ext.declarative import declared_attr
 
 from flask_login import UserMixin
+from sqlalchemy.orm import Query
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import login
@@ -37,6 +38,9 @@ class BaseModel(Model):
 
             prop_value = getattr(self, prop_name)
 
+            if isinstance(prop_value, Query):
+                continue
+
             if isinstance(prop_value, BaseModel):
                 prop_value = prop_value.to_dict()
 
@@ -47,6 +51,13 @@ class BaseModel(Model):
 
 BaseModel = db.make_declarative_base(BaseModel, db.metadata)
 
+follows = db.Table(
+    "follows",
+    db.Column("follower_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column("following_id", db.Integer, db.ForeignKey("users.id"), primary_key=True),
+    db.Column("created_at", db.DateTime, default=datetime.utcnow, nullable=False),
+)
+
 
 class User(UserMixin, BaseModel):
     __tablename__ = "users"
@@ -54,6 +65,15 @@ class User(UserMixin, BaseModel):
 
     username = db.Column(db.String(255), unique=True, nullable=False)
     password = db.Column(db.String(511), nullable=False)
+
+    following = db.relationship(
+        "User",
+        lambda: follows,
+        primaryjoin=lambda: User.id == follows.c.follower_id,
+        secondaryjoin=lambda: User.id == follows.c.following_id,
+        backref=db.backref("followers", lazy="dynamic"),
+        lazy="dynamic",
+    )
 
     def set_password(self, password: str) -> "User":
         self.password = generate_password_hash(password)
