@@ -94,6 +94,7 @@
         "tweets": "tweets/getTweets",
         "paginationMetadata": "tweets/getMetadata",
         "loggedIn": "user/loggedIn",
+        "following": "user/getFollowing",
       }),
 
     },
@@ -110,6 +111,12 @@
 
       page() {
         this.fetchTimeline();
+      },
+
+      following() {
+        if ("private" === this.timeline) {
+          this.fetchTimeline();
+        }
       },
 
     },
