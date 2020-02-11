@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import createMutationsSharer from "vuex-shared-mutations";
 
 Vue.use(Vuex);
 
@@ -27,4 +28,9 @@ export default new Vuex.Store({
   mutations: {},
   actions: {},
   modules: requireAll(require.context("./modules", false, /\.js$/)),
+  plugins: [
+    createMutationsSharer({
+      predicate: (mutation) => mutation.type.startsWith("user/"),
+    }),
+  ],
 });

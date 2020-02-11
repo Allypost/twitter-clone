@@ -31,7 +31,8 @@
     "vue-radial-progress": "^0.2.10",
     "vue-spinner": "^1.0.3",
     "vue-template-compiler": "^2.6.10",
-    "vue-textarea-autosize": "^1.1.1"
+    "vue-textarea-autosize": "^1.1.1",
+    "vuex-shared-mutations": "^1.0.2"
   },
   "eslintConfig": {
     "root": true,
