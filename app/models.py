@@ -91,12 +91,14 @@ class User(UserMixin, BaseModel):
 
 class Image(BaseModel):
     __tablename__ = "images"
-    __hidden__ = {"fs_path"}
+    __hidden__ = {"fs_path", "uploader_id"}
 
     name = db.Column(db.String(255), nullable=False, unique=True)
     fs_path = db.Column(db.String(511), nullable=False)
     hash = db.Column(db.String(511), nullable=False)
     mime_type = db.Column(db.String(255))
+    uploader_id = db.Column(db.Integer, db.ForeignKey("users.id"))
+    uploader = db.relationship("User")
 
 
 class Tweet(BaseModel):
