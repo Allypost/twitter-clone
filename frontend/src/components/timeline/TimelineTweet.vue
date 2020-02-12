@@ -37,7 +37,7 @@
               :class="$style.deleteButton"
               :disabled="loading"
               @click.prevent="handleDelete"
-            >&#x1f5d1;</button>
+            ><trash-2-icon /></button>
           </template>
         </span>
       </div>
@@ -52,6 +52,7 @@
 <script>
   import { format } from "timeago.js";
   import { mapActions, mapGetters } from "vuex";
+  import { Trash2Icon } from "vue-feather-icons";
 
   const requestIdleCallbackPolyfill = function(handler) {
     const startTime = Date.now();
@@ -85,6 +86,8 @@
 
   export default {
     name: "TimelineTweet",
+
+    components: { Trash2Icon },
 
     props: {
       tweet: {
@@ -282,11 +285,17 @@
 
     $color: #e53935;
 
+    display: inline-flex;
     border-color: $color;
     background-color: transparentize($color, .95);
 
     &:hover {
       background-color: transparentize($color, .9);
+    }
+
+    > svg {
+      width: 1em;
+      height: 1em;
     }
   }
 </style>
