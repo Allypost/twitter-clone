@@ -68,6 +68,7 @@ def api_file_upload():
 
     image = Image(
         name=filename,
+        original_name=file.filename,
         fs_path=fs_path,
         hash=file_hash,
         mime_type=file.mimetype,
