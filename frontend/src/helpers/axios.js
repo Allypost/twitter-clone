@@ -50,6 +50,29 @@ export async function post(url, data = undefined, config = {}) {
 
 /**
  * @param {String} url
+ * @param {String} name - The name of the file form field
+ * @param {File} file - The HTML File object
+ * @param {AxiosRequestConfig} config
+ * @returns {Promise<ApiResponse>}
+ */
+export async function postFile(url, name, file, config = {}) {
+  const formData = new FormData();
+  formData.append(name, file);
+
+  return post(
+    url,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      ...config,
+    },
+  );
+}
+
+/**
+ * @param {String} url
  * @param {AxiosRequestConfig} config
  * @returns {Promise<ApiResponse>}
  */
