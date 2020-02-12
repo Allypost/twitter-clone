@@ -80,7 +80,10 @@
         </span>
 
         <label :class="$style.fileInputContainer">
-          <span :class="$style.fileUploadButton">
+          <span
+            :class="$style.fileUploadButton"
+            title="Upload image"
+          >
             <image-icon />
           </span>
           <input
