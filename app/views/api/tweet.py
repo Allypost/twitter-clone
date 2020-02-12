@@ -39,10 +39,11 @@ def api_tweet():
 
     image_id = data["imageId"]
 
-    image_exists = Image.query.filter_by(id=image_id).count() > 0
+    if image_id is not None:
+        image_exists = Image.query.filter_by(id=image_id).count() > 0
 
-    if not image_exists:
-        return error_response(["Image not found"])
+        if not image_exists:
+            return error_response(["Image not found"])
 
     tweet = Tweet(
         text=data["text"].replace("\r\n", "\n"),

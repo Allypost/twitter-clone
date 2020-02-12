@@ -7,6 +7,7 @@ class Config(object):
     DEBUG = False
     TESTING = False
     CSRF_ENABLED = True
+    UPLOAD_DIR = os.path.join(basedir, "uploads")
     SECRET_KEY = os.environ["SECRET_KEY"] or os.urandom(128)
     SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
     SQLALCHEMY_TRACK_MODIFICATIONS = False

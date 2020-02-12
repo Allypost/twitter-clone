@@ -3,6 +3,7 @@ from flask import render_template, redirect
 from app.views.api.auth import *
 from app.views.api.tweet import *
 from app.views.api.user import *
+from app.views.api.file import *
 
 
 @app.route("/logout")
