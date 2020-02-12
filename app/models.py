@@ -1,12 +1,14 @@
+import os
 from datetime import datetime
 from typing import Dict, Any, Optional
 
 from flask_sqlalchemy import Model
-from sqlalchemy import Table
+from sqlalchemy import Table, event
+from sqlalchemy.engine import Connection
 from sqlalchemy.ext.declarative import declared_attr
 
 from flask_login import UserMixin
-from sqlalchemy.orm import Query
+from sqlalchemy.orm import Query, Mapper
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import login
@@ -99,6 +101,11 @@ class Image(BaseModel):
     mime_type = db.Column(db.String(255))
     uploader_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     uploader = db.relationship("User")
+
+
+@event.listens_for(Image, "after_delete")
+def image_on_delete_remove_file(mapper: Mapper, connection: Connection, target: Image):
+    os.remove(target.fs_path)
 
 
 class Tweet(BaseModel):
