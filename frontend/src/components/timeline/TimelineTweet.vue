@@ -41,10 +41,18 @@
           </template>
         </span>
       </div>
-      <blockquote
-        :class="$style.tweetBodyText"
-        v-text="tweet.text"
-      />
+      <div :class="$style.tweetBodyContainer">
+        <blockquote
+          :class="$style.tweetBodyText"
+          v-text="tweet.text"
+        />
+        <img
+          v-if="tweet.image"
+          :alt="tweet.image.original_name || tweet.image.name"
+          :class="$style.tweetBodyImage"
+          :src="`/api/file/uploads/by-name/${tweet.image.name}`"
+        >
+      </div>
     </div>
   </article>
 </template>
@@ -235,12 +243,25 @@
     font-weight: lighter;
   }
 
-  .tweet-body-text {
+  .tweet-body-container {
     box-sizing: border-box;
     margin: .1em 0 .1em .4em;
     padding-left: .4em;
-    white-space: pre-wrap;
     border-left: 1px solid #{$text-color};
+  }
+
+  .tweet-body-text {
+    margin: 0;
+    white-space: pre-wrap;
+  }
+
+  .tweet-body-image {
+    $top-spacing: .5em;
+
+    width: 100%;
+    margin-top: $top-spacing / 2;
+    padding-top: $top-spacing / 2;
+    border-top: 1px dashed transparentize($text-color, .7);
   }
 
   .edit-tools {
