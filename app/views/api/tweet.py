@@ -8,7 +8,7 @@ from app.db import db
 from flask import request
 
 from app import app
-from app.models import Tweet, follows
+from app.models import Tweet, follows, Image
 from app.views.helpers import (
     json_route,
     error_response,
@@ -37,8 +37,17 @@ def api_tweet():
     if tweet_len > 120:
         return error_response(["Your tweet must be at most 120 characters."])
 
+    image_id = data["imageId"]
+
+    image_exists = Image.query.filter_by(id=image_id).count() > 0
+
+    if not image_exists:
+        return error_response(["Image not found"])
+
     tweet = Tweet(
-        text=data["text"].replace("\r\n", "\n"), poster_id=int(current_user.get_id())
+        text=data["text"].replace("\r\n", "\n"),
+        poster_id=int(current_user.get_id()),
+        image_id=image_id,
     )
 
     db.session.add(tweet)
@@ -57,6 +66,10 @@ def api_delete_tweet(tweet_id: int):
         return error_response(["You don't have permission to do that."])
 
     db.session.delete(tweet)
+
+    if tweet.image:
+        db.session.delete(tweet.image)
+
     db.session.commit()
 
     return success_response(None)
