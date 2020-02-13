@@ -27,3 +27,5 @@ docker-compose.override.yml
 __pycache__
 
 supervisord.pid
+
+/.env

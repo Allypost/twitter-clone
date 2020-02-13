@@ -8,8 +8,10 @@ class Config(object):
     TESTING = False
     CSRF_ENABLED = True
     UPLOAD_DIR = os.path.join(basedir, "uploads")
-    SECRET_KEY = os.environ["SECRET_KEY"] or os.urandom(128)
-    SQLALCHEMY_DATABASE_URI = os.environ["DATABASE_URL"]
+    SECRET_KEY = os.getenv("SECRET_KEY", os.urandom(128))
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL", "postgresql://postgres:postgres@twitter-db/twitter-clone"
+    )
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
 

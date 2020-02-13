@@ -1,6 +1,6 @@
 .PHONY: up down restart prod dev build lint watch containers-build build-dev build-frontend lint-frontend lint-backend build-dev-frontend refresh-backend
 
-init: _run-init-script containers-build install build-dev up
+init: _run-init-script containers-build install build up
 
 up:
 	docker/compose up -d

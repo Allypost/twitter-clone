@@ -12,6 +12,17 @@ DIR="$(cd -P "$(dirname "$SOURCE")" >/dev/null 2>&1 && pwd)"
 cd "$DIR/../" || exit 1
 
 PRE_COMMIT_FILE="$PWD/.git/hooks/pre-commit"
+ENV_FILE="$PWD/.env"
+
+if [[ ! -f "$ENV_FILE" ]]; then
+  echo "Initializing .env file..."
+
+  cat <<'EOF' >.env
+DATABASE_URL=postgresql://postgres:postgres@twitter-db/twitter-clone
+APP_SETTINGS=config.ProductionConfig
+SECRET_KEY=this-really-needs-to-be-changed
+EOF
+fi
 
 echo "Setting up pre-commit hook..."
 
