@@ -41,8 +41,39 @@ const router = new VueRouter({
       .map((route) => ({
         // Add (lazy-loaded) component to route if it doesn't have one set already
         component: () => import((`@/views/${ route.name }.vue`)),
+        meta: {
+          title: `Twitter Clone - ${ route.name }`,
+          ...(route.meta || {}),
+        },
         ...route,
       })),
+});
+
+router.beforeEach((to, from, next) => {
+  const nearestWithTitle =
+          to
+            .matched
+            .slice()
+            .reverse()
+            .find(
+              (r) =>
+                r.meta && r.meta.title,
+            )
+  ;
+
+  if (nearestWithTitle) {
+    document.title = nearestWithTitle.meta.title;
+  }
+
+  document
+    .querySelectorAll("[data-vue-router-controlled]")
+    .forEach(
+      (el) =>
+        el.parentNode.removeChild(el),
+    )
+  ;
+
+  return next();
 });
 
 export default router;
