@@ -225,8 +225,7 @@
   @import "../assets/styles/variables";
 
   .container {
-    width: 40%;
-    margin: 0 auto;
+    width: 100%;
   }
 
   .users-container {

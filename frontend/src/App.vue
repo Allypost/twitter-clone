@@ -28,7 +28,7 @@
         </router-link>
       </template>
     </nav>
-    <main>
+    <main :class="$style.container">
       <router-view />
     </main>
   </main>
@@ -64,5 +64,27 @@
   #nav {
     font-size: 150%;
     padding: 30px;
+  }
+
+  .container {
+    width: 50%;
+    margin: 0 auto;
+    transition: width 300ms ease-out;
+
+    @media screen and (min-width: 1668px) {
+      width: 40%;
+    }
+
+    @media screen and (max-width: 1172px) {
+      width: 65%;
+    }
+
+    @media screen and (max-width: 776px) {
+      width: 85%;
+    }
+
+    @media screen and (max-width: 564px) {
+      width: 95%;
+    }
   }
 </style>

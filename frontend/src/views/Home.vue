@@ -42,8 +42,6 @@
 <style lang="scss" module>
   .section {
     font-size: 130%;
-    width: 40%;
-    min-width: 500px;
-    margin: 0 auto;
+    width: 100%;
   }
 </style>
