@@ -23,7 +23,8 @@ The project requires `docker` and `docker-compose` with support for running `doc
   5. Run `make lint` periodically to lint the project (and auto-fix some issues)
   6. After updating models run `make migration` to create a migration and `make migrate` to apply migrations to database
 
-
+### Windows
+Run it in a linux VM or on a linux server and see [Mac/Linux](#Mac/Linux)
 
 ## Make commands/targets
 
