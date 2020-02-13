@@ -29,7 +29,9 @@ def api_tweet():
     except JSONDecodeError:
         return error_response(["Invalid request."])
 
-    tweet_len = len(data["text"] or "")
+    tweet_text = data["text"] or ""
+    tweet_text = tweet_text.strip().replace("\r\n", "\n")
+    tweet_len = len(tweet_text)
 
     if tweet_len < 1:
         return error_response(["Your tweet must be at least one character."])
@@ -46,9 +48,7 @@ def api_tweet():
             return error_response(["Image not found"])
 
     tweet = Tweet(
-        text=data["text"].replace("\r\n", "\n"),
-        poster_id=int(current_user.get_id()),
-        image_id=image_id,
+        text=tweet_text, poster_id=int(current_user.get_id()), image_id=image_id
     )
 
     db.session.add(tweet)
