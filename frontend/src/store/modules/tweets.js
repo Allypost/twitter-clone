@@ -4,17 +4,17 @@ import Vue from "vue";
 const TWEET_BASE = "/api/tweet";
 const TIMELINE_BASE = `${ TWEET_BASE }/timeline`;
 
-const fetchTimeline = async ({ type, page: rawPage }) => {
+const fetchTimeline = async ({ type, page: rawPage, query: params }) => {
   const page = Math.max(1, Number(rawPage));
 
   switch (type) {
     case "public":
-      return get(`${ TIMELINE_BASE }/public/${ Number(page) }`);
+      return get(`${ TIMELINE_BASE }/public/${ Number(page) }`, { params });
     case "my":
     case "mine":
-      return get(`${ TIMELINE_BASE }/my/${ Number(page) }`);
+      return get(`${ TIMELINE_BASE }/my/${ Number(page) }`, { params });
     case "private":
-      return get(`${ TIMELINE_BASE }/private/${ Number(page) }`);
+      return get(`${ TIMELINE_BASE }/private/${ Number(page) }`, { params });
     default:
       throw new Error("Unknown tweet type");
   }
@@ -90,8 +90,8 @@ const actions = {
     }
   },
 
-  async fetchTimeline({ commit }, { page, type }) {
-    const { success, data, errors } = await fetchTimeline({ type, page });
+  async fetchTimeline({ commit }, { page, type, query = {} }) {
+    const { success, data, errors } = await fetchTimeline({ type, page, query });
 
     if (success) {
       const { items: tweets, ...metadata } = data;

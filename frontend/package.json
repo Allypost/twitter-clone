@@ -26,15 +26,18 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "lodash": "^4.17.15",
+    "luxon": "^1.22.0",
     "sass": "^1.25.0",
     "sass-loader": "^8.0.2",
     "timeago.js": "^4.0.2",
+    "vue-datetime": "^1.0.0-beta.11",
     "vue-feather-icons": "^5.0.0",
     "vue-radial-progress": "^0.2.10",
     "vue-spinner": "^1.0.3",
     "vue-template-compiler": "^2.6.10",
     "vue-textarea-autosize": "^1.1.1",
-    "vuex-shared-mutations": "^1.0.2"
+    "vuex-shared-mutations": "^1.0.2",
+    "weekstart": "^1.0.1"
   },
   "eslintConfig": {
     "root": true,

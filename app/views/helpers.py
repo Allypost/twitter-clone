@@ -1,7 +1,7 @@
 from functools import wraps
 from typing import Callable
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_login import current_user
 from sqlalchemy.orm import Query
 
@@ -49,6 +49,14 @@ def paginated_query(*, page: int, query: Query) -> dict:
     per_page = 20
 
     entity = query.column_descriptions[0]["entity"]
+
+    q = {"before": request.args.get("before"), "after": request.args.get("after")}
+
+    if q["after"]:
+        query = query.filter(entity.created_at >= q["after"])
+
+    if q["before"]:
+        query = query.filter(entity.created_at <= q["before"])
 
     paginated_items = query.order_by(entity.id.desc()).paginate(
         page=page, per_page=per_page, error_out=False

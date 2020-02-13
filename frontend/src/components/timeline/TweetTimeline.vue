@@ -26,6 +26,14 @@
       </label>
     </section>
 
+    <section>
+      <DateTimePicker
+        v-model="dates"
+        style="font-size: 75%"
+        :disabled="loading"
+      />
+    </section>
+
     <section
       v-if="tweets.length > 0"
     >
@@ -59,17 +67,27 @@
   import { linkColorActive } from "@/assets/styles/_variables.scss";
   import PaginationFooter from "@/components/PaginationFooter";
   import TimelineTweet from "@/components/timeline/TimelineTweet";
+  import DateTimePicker from "@/components/DateTimePicker";
   import { mapActions, mapGetters } from "vuex";
 
   export default {
     name: "TweetTimeline",
 
-    components: { TimelineTweet, PaginationFooter, ScaleLoader },
+    components: {
+      TimelineTweet,
+      PaginationFooter,
+      ScaleLoader,
+      DateTimePicker,
+    },
 
     data: () => ({
       loading: true,
       timeline: "public",
       page: 1,
+      dates: {
+        before: "",
+        after: "",
+      },
     }),
 
     computed: {
@@ -84,6 +102,17 @@
         }
 
         return [];
+      },
+
+      cleanDates() {
+        const { dates } = this;
+
+        return Object.fromEntries(
+          Object
+            .entries(dates)
+            .filter(([ , v ]) => String(v).length)
+          ,
+        );
       },
 
       spinnerColor() {
@@ -119,6 +148,13 @@
         }
       },
 
+      dates: {
+        deep: true,
+        handler() {
+          this.fetchTimeline();
+        },
+      },
+
     },
 
     created() {
@@ -128,7 +164,7 @@
     methods: {
       async fetchTimeline() {
         this.$set(this, "loading", true);
-        await this.doFetchTimeline({ type: this.timeline, page: this.page });
+        await this.doFetchTimeline({ type: this.timeline, page: this.page, query: this.cleanDates });
         this.$set(this, "loading", false);
       },
 
